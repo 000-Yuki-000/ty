@@ -10,7 +10,7 @@
     // ============ CONFIGURATION ============
     const CONFIG = {
         collectThreshold: 1.5,      // Ngưỡng để collect
-        checkInterval: 1,         // Kiểm tra mỗi 1ms
+        checkInterval: 100,         // Kiểm tra mỗi 1ms
         clickCooldown: 5000,        // Cooldown sau khi click
         loginDelay: 2000,           // Đợi autofill
         errorReloadDelay: 2000,     // Delay trước khi reload khi lỗi
@@ -119,4 +119,5 @@
     }, 2000);
     
     console.log('✅ Script sẵn sàng!');
+
 })();
