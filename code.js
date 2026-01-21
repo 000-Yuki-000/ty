@@ -6,9 +6,10 @@
     'use strict';
     
     console.log('🚀 Auto Collect Script đã load!');
-    
+    document.querySelector('button[name="games_sbor"]').click();
     let hasClicked = false; // Cờ đánh dấu đã click
     let lastValue = 0; // Giá trị trước đó
+
     
     function autoCollect() {
         const tikElement = document.getElementById('tik');
@@ -46,3 +47,4 @@
         setInterval(autoCollect, 100); // Có thể để interval nhỏ hơn an toàn
     }, 2000);
 })();
+
