@@ -5,51 +5,44 @@
 (function() {
     'use strict';
     
-    console.log('🚀 Auto Collect v3.2 đã load từ server!');
+    console.log('🚀 Auto Collect Script đã load!');
     
-    // ============ CONFIGURATION ============
-    const CONFIG = {
-        collectThreshold: 1.5,      // Ngưỡng để collect
-        checkInterval: 100,         // Kiểm tra mỗi 1ms
-        clickCooldown: 5000,        // Cooldown sau khi click
-        loginDelay: 2000,           // Đợi autofill
-        errorReloadDelay: 2000,     // Delay trước khi reload khi lỗi
-    };
+    let hasClicked = false; // Cờ đánh dấu đã click
+    let lastValue = 0; // Giá trị trước đó
     
-    let canClick = true;
-    
-    // ============ AUTO COLLECT ============
     function autoCollect() {
         const tikElement = document.getElementById('tik');
         const collectButton = document.querySelector('button[name="games_sbor"]');
         
-        if (!tikElement || !collectButton || !canClick) {
+        if (!tikElement || !collectButton) {
             return;
         }
         
-        const currentValue = parseFloat(tikElement.textContent.trim().replace(/,/g, ''));
+        const valueText = tikElement.textContent.trim().replace(/,/g, '');
+        const currentValue = parseFloat(valueText);
+        
         console.log('💰 Giá trị:', currentValue);
         
-        if (currentValue >= CONFIG.collectThreshold) {
-            console.log('✅ Đạt ' + CONFIG.collectThreshold + ' - Click COLLECT!');
+        // Chỉ click nếu:
+        // 1. Chưa click lần nào (hasClicked = false)
+        // 2. Giá trị >= 1.6
+        // 3. Giá trị đang tăng (để tránh click ngay sau reload)
+        if (!hasClicked && currentValue >= 1.5 && currentValue > lastValue) {
+            console.log('✅ Đạt ngưỡng - Click COLLECT!');
             collectButton.click();
-            canClick = false;
-            setTimeout(() => { canClick = true; }, CONFIG.clickCooldown);
+            hasClicked = true; // Đánh dấu đã click
         }
+        
+        // Reset cờ nếu giá trị giảm xuống dưới 1.0 (sau khi reload)
+        if (currentValue < 1.0) {
+            hasClicked = false;
+        }
+        
+        lastValue = currentValue;
     }
     
-    // ============ INIT ============
+    // Đợi page load xong
     setTimeout(() => {
-        if (handleLoginPage()) {
-            console.log('📍 Trang login - Chờ đăng nhập...');
-        } else {
-            console.log('📍 Trang game - Auto collect bắt đầu!');
-            console.log('⚙️ Ngưỡng collect:', CONFIG.collectThreshold);
-            setInterval(autoCollect, CONFIG.checkInterval);
-        }
+        setInterval(autoCollect, 100); // Có thể để interval nhỏ hơn an toàn
     }, 2000);
-    
-    console.log('✅ Script sẵn sàng!');
-
 })();
-
